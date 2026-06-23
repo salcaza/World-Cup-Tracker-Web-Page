@@ -1,6 +1,6 @@
 import sqlalchemy as db
 import pandas as pd 
-import datetime
+from datetime import datetime, timezone
 
 
 
@@ -31,14 +31,7 @@ mock_schedule = [{
     "date": "2026-06-20",
     "status": "Match Finished"}]
 
-#Mock data for team information
-mock_team_info = [
-    {"team_name": "Argentina",
-    "player_name" : "Lionel Messi",
-    "position": "Forward",
-    "coach": "Lionel Scaloni"
-    }
-]
+
 
 #Mock data for news headlines on teams
 mock_headlines = [{
@@ -55,47 +48,106 @@ mock_headlines = [{
 def save_team(team_name):
     team_data = {
         "team_name": team_name,
-        "saved_at" : datetime.now().strftime("%I:%M%p on %B %d, %Y")
+        "saved_at" : datetime.now(timezone.utc).strftime("%I:%M%p on %B %d, %Y")
     }
 
-    df = pd.DataFrame.from_dict(team_data)
+    #wrap team_data around a list since it is one dictionary (not a list of dictionaries)
+    df = pd.DataFrame([team_data])
 
     #if the table already exists append the new values
-    df.tosql("saved_teams", con=engine, if_exists='append', index=False)
+    df.to_sql("saved_teams", con=engine, if_exists='append', index=False)
+
 
 # Function that saves the schedule list of a particular team in the database
 def save_schedule(schedule_list):
+    if len(schedule_list) == 0:
+        return
 
-    #
-    df = pd.DataFame.from_dict(schedule_list)
+    #load data into dataframe
+    df = pd.DataFrame(schedule_list)
 
-    df.tosql("saved_schedules", con=engine, if_exists='append', index=False)
+    #Create sql table for schedules
+    df.to_sql("schedules", con=engine, if_exists='append', index=False)
+
 
 def save_headlines(headline_list):
+    if len(headline_list) == 0:
+        return
+    
+    #load data into dataframe
+    df = pd.DataFrame(headline_list)
+
+    #Create sql table for headlines
+    df.to_sql("headlines", con=engine, if_exists='append', index=False)
 
 
-def save_team_info(team_info_list):
+
 
 
 #Read functions will query the database and read the sql 
 
-#Stores the mock database from the mock data 
-def create_mock_database():
+#Writes a query to saved teams table and returns saved teams
+def read_saved_teams():
+
+    with engine.connect() as connection:
+        query_result = connection.execute(db.text("SELECT * FROM saved_teams;")).fetchall()
+        return query_result
+
+#Writes a query to saved schedules table and returns schedule for chosen team
+def read_schedules_for_team(team_name):
+    with engine.connect() as connection:
+        #Filter by team name
+        query_result = connection.execute(db.text("SELECT * FROM schedules WHERE team_name = :team_name;"), 
+        {"team_name" : team_name}).fetchall()
+        return query_result
+
+#Writes a query to saved headlines table and returns saved headlines
+def read_saved_headlines_for_team():
+    with engine.connect() as connection:
+        query_result = connection.execute(db.text("SELECT * FROM headlines WHERE team_name= :team_name;"),
+        {"team_name" : team_name}).fetchall()
+        return query_result
+    
 
 
-#Calls the mock database and tests outputs
-if __name__ == __main__:
+
+#Tests the databases using the same save/read functions that main will use 
+def test_mock_database():
+    reset_database()
+
+    #initialize the save_team table
+    for team in mock_saved_teams:
+        save_team(team["team_name"])
+
+    save_schedule(mock_schedule)
+    save_headlines(mock_headlines)
+
+    print("\n Saved Teams:")
+    print(read_saved_teams())
+
+    print("\nMexico Schedule:")
+
+    print(read_schedules_for_team("Mexico"))
+
+    print("\n Headlines for Mexico: ")
+    print(read_saved_headlines_for_team("Mexico"))
 
 
 
 
 
 
+#resets the database for testing purposes
+
+def reset_database():
+    with engine.connect() as connection:
+        connection.execute(db.text("DROP TABLE IF EXISTS saved_teams"))
+        connection.execute(db.text("DROP TABLE IF EXISTS schedules"))
+        connection.execute(db.text("DROP TABLE IF EXISTS headlines"))
 
 
+if __name__ == "__main__":
+    test_mock_database()
 
 
-df_football = 
-
-df_news = 
 
