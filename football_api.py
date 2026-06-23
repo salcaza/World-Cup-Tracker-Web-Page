@@ -34,7 +34,21 @@ def get_team_schedule(team_name):
         away= game.get("away_team_name_en", "").lower()
 
         if team_name == home or team_name == away:
-            matches.append(game)
+            match = {
+                "id": game.get("id"),
+                "group": game.get("group"),
+                "local_date": game.get("local_date"),
+                "finished": game.get("finished"),
+                "home_team_name_en": game.get("home_team_name_en"),
+                "away_team_name_en": game.get("away_team_name_en"),
+                "type": game.get("type")
+            }
+
+            if game.get("finished") == "True":
+                match["home_score"] = game.get("home_score")
+                match["away_score"] = game.get("away_score")
+            
+            matches.append(match)
 
     return matches
 
@@ -49,9 +63,13 @@ def print_schedule(team_name):
         home = game.get("home_team_name_en", "TBD")
         away = game.get("away_team_name_en", "TBD")
         group = game.get("group", "")
+        game_type = game.get("type","")
 
-        print(f"{date} | {home} vs {away} | {group}")    
-
+        if game_type == "group":
+            print(f"{date} | {home} vs {away} | Group {group}")
+        else:
+            print(game_type)
+            print(f"{date} | {home} vs {away} | {game_type}")
 
 if __name__ == "__main__":
     #save_schedule()
