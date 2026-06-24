@@ -26,16 +26,26 @@ while true:
         if choice == "S":
             print_schedule(team)
             print()
-            save = input("Would you like to save this info? (y/n)")
+            save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
                 save_schedule(get_team_schedule(team))
+
         elif choice == "H":
             print_news(team)
             print()
-            save = input("Would you like to save this info? (y/n)")
+            save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
                 save_headlines(get_news)
+
         elif choice == "I":
             pass
+
+        elif choice == "C":
+            # Break out of the inner loop and choose another team
+            break
+
+        elif choice == "Q":
+            exit()
+
         else:
             print("INVALID CHOICE")
