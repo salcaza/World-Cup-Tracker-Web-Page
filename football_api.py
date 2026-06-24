@@ -9,7 +9,7 @@ API_KEY = os.environ.get("FOOTBALL_API_KEY")
 BASE_URL = 'https://worldcup26.ir'
 
 
-def save_schedule():
+def save_schedule_json():
     response = requests.get(f'{BASE_URL}/get/games')
 
     if response.status_code != 200:
@@ -25,6 +25,8 @@ def save_schedule():
 
 
 def get_team_schedule(team_name):
+    # Uncomment line if need to get schedule from API
+    # save_schedule_json()
     with open("schedule_data.json", "r") as file:
         data = json.load(file)
     games = data["games"]
@@ -38,14 +40,19 @@ def get_team_schedule(team_name):
 
         if team_name == home or team_name == away:
             match = {
-                "id": game.get("id"),
                 "group": game.get("group"),
                 "local_date": game.get("local_date"),
                 "finished": game.get("finished"),
-                "home_team_name_en": game.get("home_team_name_en"),
-                "away_team_name_en": game.get("away_team_name_en"),
                 "type": game.get("type")
             }
+
+            if team_name == home:
+                match["team_name"] = game.get("home_team_name_en")
+                match["opponent"] = game.get("away_team_name_en")
+
+            if team_name == away:
+                match["opponent"] = game.get("home_team_name_en")
+                match["team_name"] = game.get("away_team_name_en")
 
             if game.get("finished") == "True":
                 match["home_score"] = game.get("home_score")
@@ -63,8 +70,8 @@ def print_schedule(team_name):
 
     for game in schedule:
         date = game.get("local_date", "Date TBD")
-        home = game.get("home_team_name_en", "TBD")
-        away = game.get("away_team_name_en", "TBD")
+        home = game.get("team_name", "TBD")
+        away = game.get("opponent", "TBD")
         group = game.get("group", "")
         game_type = game.get("type","")
 
@@ -74,9 +81,6 @@ def print_schedule(team_name):
             print(f"{date} | {home} vs {away} | {game_type}")
 
 if __name__ == "__main__":
-    #uncomment line to get data from API
-    #Only need to run save_schedule once
-    #save_schedule()
     team = input("Enter team name: ")
     print()
     print_schedule(team)

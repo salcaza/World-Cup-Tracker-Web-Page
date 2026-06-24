@@ -1,13 +1,13 @@
 import sqlalchemy as db
 import pandas as pd 
 from datetime import datetime, timezone
-
-
+from news_api import print_news
 
 
 #SQLite database engine
 engine = db.create_engine('sqlite:///world_cup.db')
 
+"""
 #Mock data for saved teams
 mock_saved_teams = [
     {"team_name": "Mexico",
@@ -31,8 +31,6 @@ mock_schedule = [{
     "date": "2026-06-20",
     "status": "Match Finished"}]
 
-
-
 #Mock data for news headlines on teams
 mock_headlines = [{
     "team_name" : "Mexico",
@@ -42,6 +40,7 @@ mock_headlines = [{
     "url" : "..."
 
 }]
+"""
 
 # Function that takes in team, represents it as a dictionary of team name and time saved.
 # Transforms team_data into a dataframe that will be saved in a database table. 
@@ -53,18 +52,28 @@ def save_team(team_name):
 
     #wrap team_data around a list since it is one dictionary (not a list of dictionaries)
     df = pd.DataFrame([team_data])
-
     #if the table already exists append the new values
     df.to_sql("saved_teams", con=engine, if_exists='append', index=False)
 
 
 # Function that saves the schedule list of a particular team in the database
-def save_schedule(schedule_list):
+def save_schedule(schedule_list, team_name):
     if len(schedule_list) == 0:
         return
 
     #load data into dataframe
     df = pd.DataFrame(schedule_list)
+
+    #handle duplicate saves of the same schedule
+    with engine.connect() as connection:
+        try:
+            connection.execute(
+                db.text("DELETE FROM schedules WHERE team_name = :team_name"),
+                {"team_name": team_name}
+            )
+            connection.commit()
+        except:
+            pass
 
     #Create sql table for schedules
     df.to_sql("schedules", con=engine, if_exists='append', index=False)
@@ -97,20 +106,42 @@ def read_saved_teams():
 def read_schedules_for_team(team_name):
     with engine.connect() as connection:
         #Filter by team name
-        query_result = connection.execute(db.text("SELECT * FROM schedules WHERE team_name = :team_name;"), 
-        {"team_name" : team_name}).fetchall()
-        return query_result
+        try:
+            query_result = connection.execute(db.text("SELECT * FROM schedules WHERE team_name = :team_name;"),
+            {"team_name" : team_name}).fetchall()
+
+            for game in query_result:
+                date = game[1]
+                home = game[5]
+                away = game[4]
+                group = game[0]
+                game_type = game[3]
+
+                if game_type == "group":
+                    print(f"{date} | {home} vs {away} | Group {group}")
+                else:
+                    print(f"{date} | {home} vs {away} | {game_type}")
+
+            return query_result
+        except:
+            return
 
 # Writes a query to saved headlines table and returns saved headlines
 def read_saved_headlines_for_team(team_name):
     with engine.connect() as connection:
-        query_result = connection.execute(db.text("SELECT * FROM headlines WHERE team_name= :team_name;"),
-        {"team_name" : team_name}).fetchall()
-        return query_result
-    
+        try:
+            query_result = connection.execute(db.text("SELECT * FROM headlines WHERE team_name= :team_name;"),
+            {"team_name" : team_name}).fetchall()
+            
+            print_news(team_name)
+
+            return query_result
+        except:
+            return
+        
 
 
-
+"""
 # Tests the databases using the same save/read functions that main will use 
 def test_mock_database():
     reset_database()
@@ -131,14 +162,10 @@ def test_mock_database():
 
     print("\n Headlines for Mexico: ")
     print(read_saved_headlines_for_team("Mexico"))
-
-
-
-
+"""
 
 
 #resets the database for testing purposes
-
 def reset_database():
     with engine.connect() as connection:
         connection.execute(db.text("DROP TABLE IF EXISTS saved_teams"))
@@ -147,7 +174,5 @@ def reset_database():
 
 
 if __name__ == "__main__":
-    test_mock_database()
-
-
-
+    #test_mock_database()
+    reset_database()
