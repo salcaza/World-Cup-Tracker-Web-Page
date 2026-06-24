@@ -46,7 +46,11 @@ def get_news(team):
 
     for article in news_data["articles"]:
         article = {
-            "team_name": team
+            "team_name": team,
+            "title": article.get("title"),
+            "author": article.get("author"),
+            "description": article.get("description"),
+            "url" : article.get("url")
         }
         
         articles.append(article)
@@ -56,9 +60,18 @@ def get_news(team):
 
 def print_news(team):
     print(f"RECENT HEADLINES FOR {team}")
+    print()
 
+    articles = get_news(team)
+    
+    for article in articles:
+        print(f'Title: {article.get("title")}')
+        print(f'By: {article.get("author")}')
+        print(f'Description: {article.get("description")}')
+        print(f'URL: {article.get("url")}')
+        print()
 
 
 if __name__ == "__main__":
     team = input("Enter team name: ")
-    print(get_news(team))
+    print_news(team)
