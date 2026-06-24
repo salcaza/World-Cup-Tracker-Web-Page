@@ -4,26 +4,30 @@ from database import save_headlines, save_schedule, save_team
 
 print("WELCOME TO THE WORLD CUP TRACKER")
 
-while true:
+while True:
     team = input("Enter a team you'd like to track (or 'quit' to exit): ")
 
     if team.lower() == "quit":
         break
 
-    while true:
+    while True:
 
         menu = (
-            "\nMENU OPTIONS:\n"
-            "View Team Schedule (S)\n"
-            "View Recent Headlines (H)\n"
-            "View Future Insights (I)\n"
-            "Change Team(C)\n"
-            "Quit(Q)\n"
+            "\nWhat would you like to do:\n"
+            "View Team Schedule (Enter: S)\n"
+            "View Recent Headlines (Enter: H)\n"
+            "View Future Insights (Enter: I)\n"
+            "View Saved Schedule (Enter: VS)\n"
+            "View Saved Headlines (Enter: VH)\n"
+            "View Saved Insights (Enter: VI)\n"
+            "Change Team (Enter: C)\n"
+            "Quit (Enter: Q)\n"
         )
 
         choice = input(menu).upper()
 
         if choice == "S":
+            print()
             print_schedule(team)
             print()
             save = input("\nWould you like to save this info? (y/n)")
@@ -31,14 +35,24 @@ while true:
                 save_schedule(get_team_schedule(team))
 
         elif choice == "H":
+            print()
             print_news(team)
             print()
             save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
-                save_headlines(get_news)
+                save_headlines(get_news(team))
 
         elif choice == "I":
-            pass
+            print("Not ready yet")
+
+        elif choice == "VS":
+            print("Not ready yet")
+
+        elif choice == "VH":
+            print("Not ready yet")
+
+        elif choice == "VI":
+            print("Not ready yet")
 
         elif choice == "C":
             # Break out of the inner loop and choose another team
