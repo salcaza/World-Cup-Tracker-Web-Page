@@ -35,7 +35,7 @@ mock_schedule = [{
 
 #Mock data for news headlines on teams
 mock_headlines = [{
-    "team_name" : "Argentina",
+    "team_name" : "Mexico",
     "title": "...",
     "author": "...",
     "description": "...",
@@ -101,8 +101,8 @@ def read_schedules_for_team(team_name):
         {"team_name" : team_name}).fetchall()
         return query_result
 
-#Writes a query to saved headlines table and returns saved headlines
-def read_saved_headlines_for_team():
+# Writes a query to saved headlines table and returns saved headlines
+def read_saved_headlines_for_team(team_name):
     with engine.connect() as connection:
         query_result = connection.execute(db.text("SELECT * FROM headlines WHERE team_name= :team_name;"),
         {"team_name" : team_name}).fetchall()
@@ -111,11 +111,11 @@ def read_saved_headlines_for_team():
 
 
 
-#Tests the databases using the same save/read functions that main will use 
+# Tests the databases using the same save/read functions that main will use 
 def test_mock_database():
     reset_database()
 
-    #initialize the save_team table
+    # initialize the save_team table
     for team in mock_saved_teams:
         save_team(team["team_name"])
 
