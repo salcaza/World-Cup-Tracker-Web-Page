@@ -68,10 +68,12 @@ def print_schedule(team_name):
         if game_type == "group":
             print(f"{date} | {home} vs {away} | Group {group}")
         else:
-            print(game_type)
             print(f"{date} | {home} vs {away} | {game_type}")
 
 if __name__ == "__main__":
+    #uncomment line to get data from API
+    #Only need to run save_schedule once
     #save_schedule()
-    team = input("Enter team name:")
+    team = input("Enter team name: ")
+    print()
     print_schedule(team)
