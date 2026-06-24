@@ -1,6 +1,9 @@
 import json
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()   
 
 API_KEY = os.environ.get("FOOTBALL_API_KEY")
 BASE_URL = 'https://worldcup26.ir'

@@ -1,8 +1,11 @@
 import os
 from google import genai 
 from google.genai import types, errors
-import football_api
-import news_api
+from football_api import get_team_schedule
+from news_api import save_news
+from dotenv import load_dotenv
+
+load_dotenv()
 
 #Set environment variables
 
@@ -11,12 +14,12 @@ genai.api_key = my_api_key
 
 # Creates a genAI client using the key from our environment variable
 client = genai.Client(
-    api_key = my_api_key
+    api_key=my_api_key
 )
 
 # Schedule context to feed gemini (re-used print schedule from football_api.py)
 def build_schedule_context(team_name):
-    schedule = football_api.get_team_schedule(team_name)
+    schedule = get_team_schedule(team_name)
 
     context = f"World Cup Schedule for {team_name}:\n"
 
@@ -44,15 +47,15 @@ def build_schedule_context(team_name):
 def get_future_insight(team_name):
 
     # Build the context needed by calling function on team name
-    schedule_conext = build_schedule_context(team_name)
+    schedule_context = build_schedule_context(team_name)
 
-    user_prompt = f"Analyze {team_name}'s 2026 World Cup future matchups. Use {schedule_conext} as context for team schedule." 
+    user_prompt = f"Analyze {team_name}'s 2026 World Cup future matchups. Use {schedule_context} as context for team schedule." 
 
     try: 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             config=types.GenerateContentConfig(
-                system_instruction="You are a professional football analyst for the 2026 World Cup and you are able to provide brief, realistic future insights on teams."
+                system_instruction="You are a professional football analyst for the 2026 World Cup and you are able to provide very brief, realistic future insights on teams."
             ), 
             contents=user_prompt
         )
@@ -64,7 +67,31 @@ def get_future_insight(team_name):
         print("Error: ", e)
 
 
+def get_summary(team_name):
+
+    news_context = save_news(team_name)
+    user_prompt = f" Summarize the articles about {team_name} using {news_context}"
+
+    try: 
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            config=types.GenerateContentConfig(
+                system_instruction="You are a news reporter that gives clear, very brief summaries on news articles on specific football teams."
+            ), 
+            contents=user_prompt
+        )
+        return print(response.text)
+    
+    # Error handling
+    except errors.ServerError as e:
+        print("Gemini is currently unavailable")
+        print("Error: ", e)
+
+
+
+
 if __name__ == "__main__":
 
     insight = get_future_insight("Mexico")
+    summary = get_summary("Mexico")
 
