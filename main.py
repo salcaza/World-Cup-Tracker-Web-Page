@@ -1,6 +1,6 @@
+import database as db
 from football_api import get_team_schedule, print_schedule
 from news_api import get_news, print_news
-from database import save_headlines, save_schedule, save_team
 
 print("WELCOME TO THE WORLD CUP TRACKER")
 
@@ -32,7 +32,7 @@ while True:
             print()
             save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
-                save_schedule(get_team_schedule(team))
+                db.save_schedule(get_team_schedule(team))
 
         elif choice == "H":
             print()
@@ -40,16 +40,16 @@ while True:
             print()
             save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
-                save_headlines(get_news(team))
+                db.save_headlines(get_news(team))
 
         elif choice == "I":
             print("Not ready yet")
 
         elif choice == "VS":
-            print("Not ready yet")
+            db.read_schedules_for_team(team)
 
         elif choice == "VH":
-            print("Not ready yet")
+            db.read_saved_headlines_for_team(team)
 
         elif choice == "VI":
             print("Not ready yet")
