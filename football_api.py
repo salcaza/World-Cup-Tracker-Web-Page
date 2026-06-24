@@ -37,14 +37,19 @@ def get_team_schedule(team_name):
 
         if team_name == home or team_name == away:
             match = {
-                "id": game.get("id"),
                 "group": game.get("group"),
                 "local_date": game.get("local_date"),
                 "finished": game.get("finished"),
-                "team_name": game.get("home_team_name_en"),
-                "opponent": game.get("away_team_name_en"),
                 "type": game.get("type")
             }
+
+            if team_name == home:
+                match["team_name"] = game.get("home_team_name_en")
+                match["opponent"] = game.get("away_team_name_en")
+
+            if team_name == away:
+                match["opponent"] = game.get("home_team_name_en")
+                match["team_name"] = game.get("away_team_name_en")
 
             if game.get("finished") == "True":
                 match["home_score"] = game.get("home_score")
