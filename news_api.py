@@ -36,17 +36,29 @@ def save_news(team_name):
     return data
 
 
-def get_news():
+def get_news(team):
+    # Uncomment line if need data from API
+    #save_news(team)
     with open("news_data.json", "r") as f:
-        articles = json.load(f)
+        news_data = json.load(f)
 
-    return articles.get("articles", [])
+    articles = []
+
+    for article in news_data["articles"]:
+        article = {
+            "team_name": team
+        }
+        
+        articles.append(article)
+
+    return articles
+
+
+def print_news(team):
+    print(f"RECENT HEADLINES FOR {team}")
+
 
 
 if __name__ == "__main__":
     team = input("Enter team name: ")
-
-    # uncomment line to get data from API
-    # Need to run save_news everytime you change the team or the first time
-    #save_news(team)
-    print(get_news())
+    print(get_news(team))

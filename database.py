@@ -3,11 +3,10 @@ import pandas as pd
 from datetime import datetime, timezone
 
 
-
-
 #SQLite database engine
 engine = db.create_engine('sqlite:///world_cup.db')
 
+"""
 #Mock data for saved teams
 mock_saved_teams = [
     {"team_name": "Mexico",
@@ -31,8 +30,6 @@ mock_schedule = [{
     "date": "2026-06-20",
     "status": "Match Finished"}]
 
-
-
 #Mock data for news headlines on teams
 mock_headlines = [{
     "team_name" : "Mexico",
@@ -42,6 +39,7 @@ mock_headlines = [{
     "url" : "..."
 
 }]
+"""
 
 # Function that takes in team, represents it as a dictionary of team name and time saved.
 # Transforms team_data into a dataframe that will be saved in a database table. 
