@@ -41,7 +41,7 @@ def save_news(team_name):
 
 def get_news(team):
     # Uncomment line if need data from API
-    #save_news(team)
+    # save_news(team)
     with open("news_data.json", "r") as f:
         news_data = json.load(f)
 
@@ -53,9 +53,9 @@ def get_news(team):
             "title": article.get("title"),
             "author": article.get("author"),
             "description": article.get("description"),
-            "url" : article.get("url")
+            "url": article.get("url")
         }
-        
+
         articles.append(article)
 
     return articles
@@ -66,7 +66,7 @@ def print_news(team):
     print()
 
     articles = get_news(team)
-    
+
     for article in articles:
         print(f'Title: {article.get("title")}')
         print(f'By: {article.get("author")}')
