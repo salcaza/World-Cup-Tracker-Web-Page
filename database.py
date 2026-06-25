@@ -2,6 +2,7 @@ import sqlalchemy as db
 import pandas as pd 
 from datetime import datetime, timezone
 from news_api import print_news
+from gemini_api import get_headlines_summary
 
 
 #SQLite database engine
@@ -133,7 +134,7 @@ def read_saved_headlines_for_team(team_name):
             query_result = connection.execute(db.text("SELECT * FROM headlines WHERE team_name= :team_name;"),
             {"team_name" : team_name}).fetchall()
             
-            print_news(team_name)
+            get_headlines_summary(team_name)
 
             return query_result
         except:

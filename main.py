@@ -1,7 +1,7 @@
 import database as db
 from football_api import get_team_schedule, print_schedule
 from news_api import get_news, print_news
-from gemini_api import get_future_insight, get_summary
+from gemini_api import get_future_insight, get_headlines_summary
 
 print("WELCOME TO THE WORLD CUP TRACKER")
 
@@ -18,7 +18,7 @@ while True:
             "View Team Schedule (Enter: S)\n"
             "View Recent Headlines (Enter: H)\n"
             "View Future Insights (Enter: I)\n"
-            "View Summary of Recent Headlines (Enter: SH)\n"
+            "View Saved Schedule (Enter: VS)\n"
             "View Saved Headlines (Enter: VH)\n"
             "Change Team (Enter: C)\n"
             "Quit (Enter: Q)\n\n"
@@ -33,19 +33,16 @@ while True:
 
         elif choice == "H":
             print()
-            print_news(team)
+            get_headlines_summary(team)
             print()
             save = input("\nWould you like to save this info? (y/n)")
             if save.lower() == "y":
-                db.save_headlines(get_news(team))
+                db.save_headlines(get_headlines_summary(team))
 
         elif choice == "I":
             print("Loading...")
             print()
             insight = get_future_insight(team)
-
-        elif choice == "SH":
-            summary = get_summary(team)
 
         elif choice == "VH":
             db.read_saved_headlines_for_team(team)

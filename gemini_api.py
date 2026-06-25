@@ -2,7 +2,7 @@ import os
 from google import genai 
 from google.genai import types, errors
 from football_api import get_team_schedule
-from news_api import save_news
+from news_api import get_news, save_news
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,6 +48,7 @@ def get_future_insight(team_name):
 
     # Build the context needed by calling function on team name
     schedule_context = build_schedule_context(team_name)
+     
 
     user_prompt = f"Analyze {team_name}'s 2026 World Cup future matchups. Use {schedule_context} as context for team schedule." 
 
@@ -67,25 +68,46 @@ def get_future_insight(team_name):
         print("Error: ", e)
 
 
-def get_summary(team_name):
+def get_headlines_summary(team_name):
 
-    news_context = save_news(team_name)
-    user_prompt = f" Summarize the articles about {team_name} using {news_context}"
+    # obtain articles
+    articles = get_news(team_name)[0:1]
 
-    try: 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            config=types.GenerateContentConfig(
-                system_instruction="You are a news reporter that gives clear, very brief summaries on news articles on specific football teams."
-            ), 
-            contents=user_prompt
-        )
-        return print(response.text)
+    # so we can save to database
+    headline_list = []
+
     
-    # Error handling
-    except errors.ServerError as e:
-        print("Gemini is currently unavailable")
-        print("Error: ", e)
+    for article in articles:
+
+        print(f'Title: {article["title"]}')
+        print(f'By: {article["author"]}')
+        print(f'Description: {article["description"]}')
+        print(f'URL: {article["url"]}')    
+
+        user_prompt = f"follow up with a summary of each article one by one about {team_name} using {article}"
+
+        try: 
+            response = client.models.generate_content(
+                model="gemini-3.1-flash-lite",
+                config=types.GenerateContentConfig(
+                    system_instruction="You are a news reporter that gives clear, very brief summaries(1-2 sentences long on each article) on news articles on specific football teams."
+                ), 
+                contents=user_prompt
+            )
+
+            # including summary key-value pair within each article
+            article["summary"] = response.text
+            print(f'Summary: {article["summary"]}')
+            print( "-" * 50)
+            print()
+            headline_list.append(article)
+ 
+        # Error handling
+        except errors.ServerError as e:
+            print("Gemini is currently unavailable")
+            print("Error: ", e)
+
+    return headline_list
 
 
 
@@ -93,5 +115,5 @@ def get_summary(team_name):
 if __name__ == "__main__":
 
     insight = get_future_insight("Mexico")
-    summary = get_summary("Mexico")
+    summary_test = get_summary("Mexico")
 
