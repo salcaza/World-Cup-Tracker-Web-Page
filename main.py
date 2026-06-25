@@ -17,7 +17,6 @@ while True:
             "View Team Schedule (Enter: S)\n"
             "View Recent Headlines (Enter: H)\n"
             "View Future Insights (Enter: I)\n"
-            "View Saved Schedule (Enter: VS)\n"
             "View Saved Headlines (Enter: VH)\n"
             "View Saved Insights (Enter: VI)\n"
             "Change Team (Enter: C)\n"
@@ -30,10 +29,6 @@ while True:
             print()
             print_schedule(team)
             print()
-            save = input("\nWould you like to save this info? (y/n)")
-            if save.lower() == "y":
-                sched = get_team_schedule(team)
-                db.save_schedule(sched, team)
 
         elif choice == "H":
             print()
@@ -45,9 +40,6 @@ while True:
 
         elif choice == "I":
             print("Not ready yet")
-
-        elif choice == "VS":
-            db.read_schedules_for_team(team)
 
         elif choice == "VH":
             db.read_saved_headlines_for_team(team)
