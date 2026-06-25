@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()   
+load_dotenv()
 
 API_KEY = os.environ.get("FOOTBALL_API_KEY")
 BASE_URL = 'https://worldcup26.ir'
@@ -23,8 +23,9 @@ def save_schedule_json():
 
     return data
 
+
 def save_stadium_json():
-    response  = requests.get(f'{BASE_URL}/get/stadiums')
+    response = requests.get(f'{BASE_URL}/get/stadiums')
 
     if response.status_code != 200:
         print("Error:", response.status_code)
@@ -62,7 +63,7 @@ def get_team_schedule(team_name):
 
     for game in games:
         home = game.get("home_team_name_en", "").lower()
-        away= game.get("away_team_name_en", "").lower()
+        away = game.get("away_team_name_en", "").lower()
 
         if team_name == home or team_name == away:
             match = {
@@ -86,7 +87,8 @@ def get_team_schedule(team_name):
                     match["opponent_score"] = game.get("home_score")
                     match["team_score"] = game.get("away_score")
 
-            match["stadium"], match["city"] = find_stadium(game.get("stadium_id"))
+            s_id = game.get("stadium_id")
+            match["stadium"], match["city"] = find_stadium(s_id)
             matches.append(match)
 
     matches.sort(key=lambda game: game["local_date"])
@@ -102,20 +104,21 @@ def print_schedule(team_name):
         home = game.get("team_name", "TBD")
         away = game.get("opponent", "TBD")
         group = game.get("group", "")
-        game_type = game.get("type","")
-        team_score = game.get("team_score", "")
-        opponent_score = game.get("opponent_score", "")
+        game_type = game.get("type", "")
+        ts = game.get("team_score", "")
+        os = game.get("opponent_score", "")
         stadium = game.get("stadium", "")
         city = game.get("city", "")
 
         if game_type == "group":
-            print(f"{date} | {home} {team_score} vs {away} {opponent_score} | Group {group}")
+            print(f"{date} | {home} {ts} vs {away} {os} | Group {group}")
             print(f"Played in {city} at {stadium}")
             print()
         else:
-            print(f"{date} | {home} {team_score} vs {away} {opponent_score} | {game_type}")
+            print(f"{date} | {home} {ts} vs {away} {os} | {game_type}")
             print(f"Played in {city} at {stadium}")
             print()
+
 
 if __name__ == "__main__":
     team = input("Enter team name: ")
