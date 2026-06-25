@@ -71,7 +71,7 @@ def get_future_insight(team_name):
 def get_headlines_summary(team_name):
 
     # obtain articles
-    articles = get_news(team_name)[0:1]
+    articles = get_news(team_name)[0:2]
 
     # so we can save to database
     headline_list = []
@@ -98,7 +98,7 @@ def get_headlines_summary(team_name):
             # including summary key-value pair within each article
             article["summary"] = response.text
             print(f'Summary: {article["summary"]}')
-            print( "-" * 50)
+            print("-" * 50)
             print()
             headline_list.append(article)
  
@@ -116,4 +116,3 @@ if __name__ == "__main__":
 
     insight = get_future_insight("Mexico")
     summary_test = get_summary("Mexico")
-

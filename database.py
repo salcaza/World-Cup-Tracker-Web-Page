@@ -1,11 +1,11 @@
 import sqlalchemy as db
-import pandas as pd 
+import pandas as pd
 from datetime import datetime, timezone
 from news_api import print_news
 from gemini_api import get_headlines_summary
 
 
-#SQLite database engine
+# SQLite database engine
 engine = db.create_engine('sqlite:///world_cup.db')
 
 """
@@ -43,11 +43,14 @@ mock_headlines = [{
 }]
 """
 
-# Function that takes in team, represents it as a dictionary of team name and time saved.
-# Transforms team_data into a dataframe that will be saved in a database table. 
+# Function that takes in team, represents it as a
+# dictionary of team name and time saved.
+# 
+# Transforms team_data into a dataframe that will be saved in a database table.
+
 def save_team(team_name):
     team_data = {
-        "team_name": team_name,
+        "team_name" : team_name,
         "saved_at" : datetime.now(timezone.utc).strftime("%I:%M%p on %B %d, %Y")
     }
 
@@ -73,12 +76,11 @@ def save_schedule(schedule_list, team_name):
                 {"team_name": team_name}
             )
             connection.commit()
-        except:
-            pass
-
+        # error recovery
+        except Exception as e:
+            connection.rollback()
     #Create sql table for schedules
     df.to_sql("schedules", con=engine, if_exists='append', index=False)
-
 
 def save_headlines(headline_list):
     if len(headline_list) == 0:
@@ -89,10 +91,6 @@ def save_headlines(headline_list):
 
     #Create sql table for headlines
     df.to_sql("headlines", con=engine, if_exists='append', index=False)
-
-
-
-
 
 #Read functions will query the database and read the sql 
 
@@ -109,7 +107,7 @@ def read_schedules_for_team(team_name):
         #Filter by team name
         try:
             query_result = connection.execute(db.text("SELECT * FROM schedules WHERE team_name = :team_name;"),
-            {"team_name" : team_name}).fetchall()
+                {"team_name" : team_name}).fetchall()
 
             for game in query_result:
                 date = game[1]

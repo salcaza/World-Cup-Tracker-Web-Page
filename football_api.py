@@ -121,6 +121,7 @@ def print_schedule(team_name):
 
 
 if __name__ == "__main__":
+
     team = input("Enter team name: ")
     print()
     get_team_schedule(team)
