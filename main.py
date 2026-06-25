@@ -18,7 +18,6 @@ while True:
             "View Team Schedule (Enter: S)\n"
             "View Recent Headlines (Enter: H)\n"
             "View Future Insights (Enter: I)\n"
-            "View Saved Schedule (Enter: VS)\n"
             "View Saved Headlines (Enter: VH)\n"
             "Change Team (Enter: C)\n"
             "Quit (Enter: Q)\n\n"
@@ -33,6 +32,7 @@ while True:
 
         elif choice == "H":
             print()
+            print("Loading...")
             get_headlines_summary(team)
             print()
             save = input("\nWould you like to save this info? (y/n)")
