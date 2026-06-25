@@ -95,7 +95,6 @@ def get_team_schedule(team_name):
 
 def print_schedule(team_name):
     schedule = get_team_schedule(team_name)
-    print()
     print(f"World Cup Schedule for {team_name}:\n")
 
     for game in schedule:
