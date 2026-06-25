@@ -32,10 +32,6 @@ while True:
             print()
             print_schedule(team)
             print()
-            save = input("\nWould you like to save this info? (y/n)")
-            if save.lower() == "y":
-                sched = get_team_schedule(team)
-                db.save_schedule(sched, team)
 
         elif choice == "H":
             print()
