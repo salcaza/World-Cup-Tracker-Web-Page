@@ -9,6 +9,7 @@ API_KEY = os.environ.get("FOOTBALL_API_KEY")
 BASE_URL = 'https://worldcup26.ir'
 
 
+# saves the schedule data from the API into a json to avoid rate limits
 def save_schedule_json():
     response = requests.get(f'{BASE_URL}/get/games')
 
@@ -24,6 +25,7 @@ def save_schedule_json():
     return data
 
 
+# saves the stadium data from the API into a json to avoid rate limits
 def save_stadium_json():
     response = requests.get(f'{BASE_URL}/get/stadiums')
 
@@ -39,6 +41,7 @@ def save_stadium_json():
     return data
 
 
+# searches the stadium data to return which stadium matches the stadium id
 def find_stadium(s_id):
     # Uncomment line if need to get stadiums from API
     # save_stadium_json()
@@ -51,6 +54,7 @@ def find_stadium(s_id):
             return (stadium["name_en"], stadium["city_en"])
 
 
+# searches the schedule data to return a list of matches that the team has played in
 def get_team_schedule(team_name):
     # Uncomment line if need to get schedule from API
     # save_schedule_json()
@@ -95,6 +99,7 @@ def get_team_schedule(team_name):
     return matches
 
 
+# outputs the schedule in the proper format
 def print_schedule(team_name):
     schedule = get_team_schedule(team_name)
     print(f"World Cup Schedule for {team_name}:\n")

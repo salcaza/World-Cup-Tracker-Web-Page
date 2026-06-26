@@ -9,6 +9,7 @@ NEWS_API_KEY = os.environ.get("NEWS_API_KEY")
 NEWS_BASE_URL = "https://newsapi.org/v2/"
 
 
+# Calls the News API data and saves it into a json to test without rate limits
 def save_news(team_name):
     x = (
         "('national team' OR squad OR lineup OR "
@@ -39,6 +40,7 @@ def save_news(team_name):
     return data
 
 
+# grabs the news from the json and returns it an article
 def get_news(team):
     # Uncomment line if need data from API
     # save_news(team)
@@ -61,6 +63,7 @@ def get_news(team):
     return articles
 
 
+# outputs the articles
 def print_news(team):
     print(f"RECENT HEADLINES FOR {team}")
     print()
