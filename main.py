@@ -26,6 +26,7 @@ while True:
         choice = input(menu).upper()
 
         if choice == "S":
+            print("Loading...")
             print()
             print_schedule(team)
             print()
