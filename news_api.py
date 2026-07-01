@@ -43,7 +43,7 @@ def save_news(team_name):
 # grabs the news from the json and returns it an article
 def get_news(team):
     # Uncomment line if need data from API
-    # save_news(team)
+    save_news(team)
     with open("news_data.json", "r") as f:
         news_data = json.load(f)
 

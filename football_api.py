@@ -44,7 +44,7 @@ def save_stadium_json():
 # searches the stadium data to return which stadium matches the stadium id
 def find_stadium(s_id):
     # Uncomment line if need to get stadiums from API
-    # save_stadium_json()
+    save_stadium_json()
     with open("stadium_data.json", "r") as file:
         data = json.load(file)
     stadiums = data["stadiums"]
@@ -57,7 +57,7 @@ def find_stadium(s_id):
 # searches the schedule data to return a list of matches that the team has played in
 def get_team_schedule(team_name):
     # Uncomment line if need to get schedule from API
-    # save_schedule_json()
+    save_schedule_json()
     with open("schedule_data.json", "r") as file:
         data = json.load(file)
     games = data["games"]
