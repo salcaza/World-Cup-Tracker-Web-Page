@@ -2,7 +2,7 @@ body {
     margin: 0;
 }
 #header {
-    background-color: lightyellow;
+    background-color: gold;
     height: 70px;
     display: flex;
     justify-content: center;
@@ -21,7 +21,7 @@ h1 {
     font-size:50px;
     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     letter-spacing: 0.01rem;
-    color:gold;
+    color:red;
     text-shadow: 2px 2px 2px gray;
     text-decoration: none;
 }
