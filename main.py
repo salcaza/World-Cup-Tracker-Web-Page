@@ -1,14 +1,27 @@
 import database as db
+import os
+import git
+from flask_sqlalchemy import SQLAlchemy
 from football_api import get_team_schedule, print_schedule
 from news_api import get_news, print_news
 from gemini_api import get_future_insight, get_headlines_summary
 from flask import Flask, render_template, url_for, flash, redirect, request
 from forms import TeamSelectionForm
-import os
-import git
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+
+class Team(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  team = db.Column(db.String(20), unique=True, nullable=False)
+
+  def __repr__(self):
+    return f"Team('{self.team}')"
+
+with app.app_context():
+  db.create_all()
 
 @app.route("/")
 @app.route("/home")
@@ -21,6 +34,8 @@ def team_select():
     schedule = None
     if form.validate_on_submit():
         schedule = get_team_schedule(form.team.data)
+        db.session.add(form.team.data)
+        db.session.commit()
     return render_template('team_select.html', title='Team_Schedule', form=form, schedule=schedule)
 
 
