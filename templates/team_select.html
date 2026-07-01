@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method="POST" action="" class="team-form">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-entry">
+            <div class="form-group">
+                {{ form.team.label(class="form-label") }}
+                {% if form.team.errors %}
+                    {{ form.team }}
+                    <div class="invalid-feedback">
+                        {% for error in form.team.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.team }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+    {% if schedule %}
+        <h2>World Cup Schedule for {{ form.team.data }}</h2>
+            {% for game in schedule %}
+                <p class="schedule">
+                    {% if game.type == "group" %}
+                        {{ game.local_date }} | {{ game.team_name }} {{ game.team_score }} vs {{ game.opponent }} {{ game.opponent_score }} | Group {{ game.group }}
+                    {% else %}
+                        {{ game.local_date }} | {{ game.team_name }} {{ game.team_score }} vs {{ game.opponent }} {{ game.opponent_score }} | {{ game.type }}
+                    {% endif %}
+                    <br>
+                    Played in {{ game.city }} at {{ game.stadium }}
+                </p>
+            {% endfor %}
+    {% endif %}
+{% endblock content %}
